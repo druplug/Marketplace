@@ -1,0 +1,12 @@
+name = Commerce Kickstart Checkout Redirect
+description = Provide a login/register form on the checkout process.
+package = Commerce Kickstart
+core = 7.x
+dependencies[] = commerce_checkout_redirect
+
+; Information added by drupal.org packaging script on 2012-08-20
+version = "7.x-2.0-beta2"
+core = "7.x"
+project = "commerce_kickstart"
+datestamp = "1345476752"
+

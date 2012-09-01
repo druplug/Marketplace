@@ -1,0 +1,240 @@
+@import url(//fonts.googleapis.com/css?family=Open+Sans:400,700,300,600,800);
+@import url(//fonts.googleapis.com/css?family=Gentium+Basic:400,700);
+/* Include Default Variables & Mixins */
+/* End Variables & Mixins */
+/**************************************************
+* --
+* 2. Section header
+* --
+**************************************************/
+/**********************************************
+* 2.1. Zone user
+**********************************************/
+/*******************************************
+* 2.1.1. Region user first
+*******************************************/
+.block-menu-user-menu .block-inner {
+  float: right;
+  margin-right: 10px; }
+
+/**********************************************
+* 2.4. Zone header
+**********************************************/
+/**
+* Navigation
+*/
+.navigation .primary-menu .main-menu ul li,
+.navigation .second-menu .secondary-menu ul li,
+.navigation .primary-menu .main-menu li,
+.navigation .second-menu .secondary-menu li {
+  font-size: 1em; }
+
+/**************************************************
+* --
+* 3. Section content
+* --
+**************************************************/
+/*******************************************
+* 3.2.1. Sidebar first
+*******************************************/
+/* Price range */
+#search-api-ranges-block-view-form .range-box-left .form-item,
+#search-api-ranges-block-view-form .range-box-right .form-item {
+  margin-top: 0; }
+#search-api-ranges-block-view-form .range-box-left,
+#search-api-ranges-block-view-form .range-box-right {
+  position: absolute;
+  top: -30px; }
+  #search-api-ranges-block-view-form .range-box-left label,
+  #search-api-ranges-block-view-form .range-box-right label {
+    display: none; }
+#search-api-ranges-block-view-form .range-box-left {
+  left: 0; }
+#search-api-ranges-block-view-form .range-box-right {
+  right: 0; }
+  #search-api-ranges-block-view-form .range-box-right #edit-range-to {
+    text-align: right; }
+#search-api-ranges-block-view-form .range-slider-box {
+  display: block;
+  margin-top: 25px; }
+#search-api-ranges-block-view-form #edit-range-from,
+#search-api-ranges-block-view-form #edit-range-to {
+  background: none;
+  border: none;
+  font-size: 16px;
+  font-weight: 300;
+  padding: 0;
+  width: auto; }
+#search-api-ranges-block-view-form #edit-submit {
+  display: none; }
+
+/* Category */
+.region-sidebar-first .block-facetapi.field_category .item-list {
+  border: 1px solid #d9d9d9;
+  height: 220px;
+  padding: 10px 20px;
+  overflow-y: scroll; }
+
+/**********************************************
+* 3.2. Zone content
+**********************************************/
+/* HP blocks: Top advert */
+#promotional_banner .promotional_banner_saving {
+  display: inline-block;
+  width: auto;
+  padding: 0 22px 0 12px;
+  margin: 10px 0 0 0;
+  line-height: 38px; }
+
+#promotional_banner .promotional_banner_special_offer {
+  top: 15px; }
+
+#block-views-demo-content-slideshow-block-1 {
+  /* HP blocks: Slideshow */ }
+  #block-views-demo-content-slideshow-block-1 .bx-window {
+    overflow: visible !important; }
+  #block-views-demo-content-slideshow-block-1 .bx-wrapper,
+  #block-views-demo-content-slideshow-block-1 .bx-wrapper .bx-window {
+    height: 580px !important;
+    max-height: 580px;
+    min-width: 940px; }
+  #block-views-demo-content-slideshow-block-1 .event-slider .views-field-nothing,
+  #block-views-demo-content-slideshow-block-1 .event-slider .views-field-nothing em,
+  #block-views-demo-content-slideshow-block-1 .bx-prev,
+  #block-views-demo-content-slideshow-block-1 .bx-prev em,
+  #block-views-demo-content-slideshow-block-1 .bx-next,
+  #block-views-demo-content-slideshow-block-1 .bx-next em {
+    display: block;
+    text-indent: 0; }
+  #block-views-demo-content-slideshow-block-1 .bx-prev,
+  #block-views-demo-content-slideshow-block-1 .bx-next {
+    position: absolute;
+    bottom: 0; }
+  #block-views-demo-content-slideshow-block-1 .bx-next {
+    right: 0; }
+  #block-views-demo-content-slideshow-block-1 .item-list .event-slider li {
+    height: 480px;
+    width: 940px; }
+  #block-views-demo-content-slideshow-block-1 .event-slider .views-field-nothing,
+  #block-views-demo-content-slideshow-block-1 .bx-prev,
+  #block-views-demo-content-slideshow-block-1 .bx-next {
+    height: 80px;
+    text-align: center;
+    width: 32%;
+    margin-right: 2%; }
+  #block-views-demo-content-slideshow-block-1 .event-slider .views-field-nothing {
+    color: #ffffff;
+    background: #888;
+    border: 1px solid #CCC;
+    padding-bottom: 5px;
+    position: absolute;
+    bottom: -100px;
+    left: 34%; }
+  #block-views-demo-content-slideshow-block-1 .bx-prev,
+  #block-views-demo-content-slideshow-block-1 .bx-next {
+    color: #000000;
+    background: #EEE;
+    border: 1px solid #CCC;
+    text-decoration: none;
+    display: block;
+    margin-top: 15px;
+    padding-bottom: 5px; }
+  #block-views-demo-content-slideshow-block-1 .bx-prev:hover,
+  #block-views-demo-content-slideshow-block-1 .bx-next:hover {
+    background: #FFF; }
+  #block-views-demo-content-slideshow-block-1 .bx-prev {
+    margin-left: 0;
+    float: left; }
+  #block-views-demo-content-slideshow-block-1 .bx-next {
+    margin-right: 0;
+    float: right; }
+  #block-views-demo-content-slideshow-block-1 .event-slider .views-field-nothing span,
+  #block-views-demo-content-slideshow-block-1 .bx-prev span.control,
+  #block-views-demo-content-slideshow-block-1 .bx-next span.control {
+    display: block;
+    font-family: "Open Sans", sans-serif;
+    font-weight: 300;
+    font-size: 21px;
+    height: 80px;
+    line-height: 28px;
+    padding: 10px 25px 0;
+    overflow: hidden; }
+  #block-views-demo-content-slideshow-block-1 .event-slider .views-field-nothing em,
+  #block-views-demo-content-slideshow-block-1 .bx-prev span.control em,
+  #block-views-demo-content-slideshow-block-1 .bx-next span.control em {
+    font-family: "Open Sans", sans-serif;
+    font-weight: 900;
+    font-style: normal;
+    font-size: 32px;
+    text-decoration: none;
+    text-transform: uppercase; }
+
+/**********************************************
+* 3.3. Zone postscript
+**********************************************/
+#zone-postscript .views-row {
+  margin: 0; }
+#zone-postscript .views-row .views-field-field-tagline .field-content,
+#zone-postscript .block-blog-block .views-field-title .field-content {
+  font-size: 18px;
+  line-height: 26px; }
+
+/**************************************************
+* --
+* 4. Section footer
+* --
+**************************************************/
+/**
+* Connect with us
+*/
+#block-menu-menu-social-connection h2 {
+  line-height: inherit;
+  padding: 0 0 22px 25px; }
+
+/**************************************************
+* --
+* 5. Commerce specific
+* --
+**************************************************/
+/**********************************************
+* 5.1. Search & Collection page
+**********************************************/
+/**
+* Collection page
+*/
+.view-collection-taxonomy-term .view-header .taxonomy-title {
+  font-size: 3em; }
+
+.view-collection-taxonomy-term .view-header .collection-terms .view-content .item-list {
+  display: block;
+  float: none; }
+
+/**********************************************
+* 5.3. Product page
+**********************************************/
+/**
+* Add to cart popin.
+*/
+div.messages.commerce-kickstart-add-to-cart .message-inner .added-product-title {
+  padding-left: 20px;
+  width: auto; }
+
+.commerce-kickstart-add-to-cart .commerce-product-title,
+.commerce-kickstart-add-to-cart .field,
+.commerce-kickstart-add-to-cart .commerce-product-sku {
+  clear: none; }
+
+.commerce-kickstart-add-to-cart .field,
+.commerce-kickstart-add-to-cart .commerce-product-sku {
+  clear: none;
+  float: none; }
+
+.commerce-kickstart-add-to-cart .field-name-field-images {
+  float: left; }
+
+/* Cloud zoom */
+.node-product-type .commerce-product-field .cloud-zoom-container .cloud-zoom-gallery-thumbs .cloud-zoom-gallery {
+  display: block;
+  margin: 5px 0; }
+.node-product-type .field-name-field-product form.commerce-add-to-cart label {
+  float: left; }

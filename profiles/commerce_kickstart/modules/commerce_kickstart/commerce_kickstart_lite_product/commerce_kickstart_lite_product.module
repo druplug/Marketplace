@@ -1,0 +1,33 @@
+<?php
+
+/**
+ * @file
+ */
+
+include_once 'commerce_kickstart_lite_product.features.inc';
+
+/**
+ * Implements hook_migrate_api().
+ */
+function commerce_kickstart_lite_product_migrate_api() {
+  return array(
+    'api' => 2,
+  );
+}
+
+/**
+ * Implements hook_commerce_product_type_info_alter().
+ */
+function commerce_kickstart_lite_product_commerce_product_type_info_alter(&$product_types) {
+  if (isset($product_types['product'])) {
+    $product_types['product']['autosku'] = array(
+      'product_type' => 'product',
+      'pattern' => '[commerce-product:title]',
+      'advanced' => array(
+        'update_existing' => 0,
+        'hide_sku' => 1,
+        'case' => 'uppercase',
+      ),
+    );
+  }
+}

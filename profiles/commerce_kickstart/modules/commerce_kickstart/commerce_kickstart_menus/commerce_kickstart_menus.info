@@ -1,0 +1,15 @@
+name = Commerce Kickstart Menus
+description = Demonstrate how to customize the administrative menus.
+core = 7.x
+package = Commerce Kickstart
+
+dependencies[] = toolbar_megamenu
+
+stylesheets[all][] = commerce_kickstart_menus.css
+
+; Information added by drupal.org packaging script on 2012-08-20
+version = "7.x-2.0-beta2"
+core = "7.x"
+project = "commerce_kickstart"
+datestamp = "1345476752"
+

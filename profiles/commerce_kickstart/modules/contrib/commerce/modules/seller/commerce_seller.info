@@ -1,9 +1,20 @@
 name = Seller
 description = Defines the Seller entity.
 package = Commerce
+dependencies[] = contextual
+dependencies[] = field_ui
 dependencies[] = commerce
-dependencies[] = entity
+dependencies[] = commerce_ui
+dependencies[] = commerce_seller
+dependencies[] = views
 core = 7.x
 
 ; Module includes
 files[] = includes/commerce_seller_profile.controller.inc
+
+; Views handlers
+files[] = includes/views/handlers/commerce_seller_handler_area_empty_text.inc
+files[] = includes/views/handlers/commerce_seller_handler_field_seller_profile.inc
+files[] = includes/views/handlers/commerce_seller_handler_field_seller_profile_link.inc
+files[] = includes/views/handlers/commerce_seller_handler_field_seller_profile_link_delete.inc
+files[] = includes/views/handlers/commerce_seller_handler_field_seller_profile_link_edit.inc

@@ -1,0 +1,19 @@
+name = Seller UI
+description = Exposes a default UI for Sellers through profile edit forms and default Views.
+package = Commerce
+dependencies[] = contextual
+dependencies[] = field_ui
+dependencies[] = commerce
+dependencies[] = commerce_ui
+dependencies[] = commerce_seller
+dependencies[] = views
+core = 7.x
+configure = admin/commerce/seller-profiles/types
+
+; Module includes
+files[] = includes/commerce_seller_ui.profiles.inc
+
+; Views includes
+files[] = includes/views/commerce_seller_ui.views_default.inc
+
+

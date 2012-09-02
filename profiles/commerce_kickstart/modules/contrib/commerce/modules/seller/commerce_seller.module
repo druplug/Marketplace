@@ -1,0 +1,141 @@
+<?php 
+/**
+ * @file
+ * Defines the seller profile entity and API functions to manage sellers and
+ * interact with them.
+ */
+
+/**
+ * Implements hook_entity_info().
+ */
+function commerce_seller_entity_info() {
+  $return = array(
+    'commerce_seller_profile' => array(
+      'label' => t('Commerce Seller profile'),
+      'controller class' => 'CommerceSellerProfileEntityController',
+      'base table' => 'commerce_seller_profile',
+      'revision table' => 'commerce_seller_profile_revision',
+      'fieldable' => TRUE,
+      'entity keys' => array(
+        'id' => 'profile_id',
+        'revision' => 'revision_id',
+        'bundle' => 'type',
+      ),
+      'bundle keys' => array(
+        'bundle' => 'type',
+      ),
+      'bundles' => array(),
+      'load hook' => 'commerce_seller_profile_load',
+      'view modes' => array(
+        // Neither of these provide a full view of the profile but rather give
+        // the summary of field data as seen on the checkout form or in the
+        // seller profile reference field's display formatter.
+        'administrator' => array(
+          'label' => t('Administrator'),
+          'custom settings' => FALSE,
+        ),
+        'seller' => array(
+          'label' => t('Seller'),
+          'custom settings' => FALSE,
+        ),
+      ),
+      'uri callback' => 'commerce_seller_profile_uri',
+      'label callback' => 'commerce_seller_profile_label',
+      'token type' => 'commerce-seller-profile',
+      'metadata controller class' => '',
+      'access callback' => 'commerce_entity_access',
+      'access arguments' => array(
+        'user key' => 'uid',
+        'access tag' => 'commerce_seller_profile_access',
+      ),
+      'permission labels' => array(
+        'singular' => t('seller profile'),
+        'plural' => t('seller profiles'),
+      ),
+    ),
+  );
+
+  return $return;
+}
+
+/**
+ * Entity uri callback: gives modules a chance to specify a path for a seller
+ * profile.
+ */
+function commerce_seller_profile_uri($profile) {
+  // Allow modules to specify a path, returning the first one found.
+  foreach (module_implements('commerce_seller_profile_uri') as $module) {
+    $uri = module_invoke($module, 'commerce_seller_profile_uri', $profile);
+
+    // If the implementation returned data, use that now.
+    if (!empty($uri)) {
+      return $uri;
+    }
+  }
+
+  return NULL;
+}
+
+/**
+ * Entity label callback: returns the label for an individual seller profile.
+ */
+function commerce_seller_profile_label($profile) {
+  // Load the seller profile type to look find the label callback.
+  $profile_type = commerce_seller_profile_type_load($profile->type);
+
+  // Make sure we get a valid label callback.
+  $callback = $profile_type['label_callback'];
+
+  if (!function_exists($callback)) {
+    $callback = 'commerce_seller_profile_default_label';
+  }
+
+  return $callback($profile);
+}
+
+
+/**
+ * Implements hook_hook_info().
+ */
+function commerce_seller_hook_info() {
+  $hooks = array(
+    'commerce_seller_profile_type_info' => array(
+      'group' => 'commerce',
+    ),
+    'commerce_seller_profile_type_info_alter' => array(
+      'group' => 'commerce',
+    ),
+    'commerce_seller_profile_uri' => array(
+      'group' => 'commerce',
+    ),
+    'commerce_seller_profile_view' => array(
+      'group' => 'commerce',
+    ),
+    'commerce_seller_profile_presave' => array(
+      'group' => 'commerce',
+    ),
+    'commerce_seller_profile_insert' => array(
+      'group' => 'commerce',
+    ),
+    'commerce_seller_profile_update' => array(
+      'group' => 'commerce',
+    ),
+    'commerce_seller_profile_delete' => array(
+      'group' => 'commerce',
+    ),
+    'commerce_seller_profile_can_delete' => array(
+      'group' => 'commerce',
+    ),
+  );
+
+  return $hooks;
+}
+
+/**
+ * Implements hook_modules_enabled().
+ */
+function commerce_seller_modules_enabled($modules) {
+  commerce_seller_configure_seller_fields($modules);
+}
+
+

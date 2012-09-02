@@ -1,0 +1,9 @@
+name = Seller
+description = Defines the Seller entity.
+package = Commerce
+dependencies[] = commerce
+dependencies[] = entity
+core = 7.x
+
+; Module includes
+files[] = includes/commerce_seller_profile.controller.inc

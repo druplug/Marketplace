@@ -1,0 +1,10 @@
+name = Store
+description = Defines the Store entity for marketplace implementation
+package = Commerce
+dependencies[] = rules
+dependencies[] = commerce
+dependencies[] = commerce_product
+core = 7.x
+
+; Module includes
+files[] = includes/commerce_store.controller.inc

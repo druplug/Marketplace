@@ -1,0 +1,189 @@
+<?php
+
+/**
+ * Implements hook_schema().
+ */
+function commerce_seller_schema() {
+  $schema = array();
+
+  $schema['commerce_seller_profile'] = array(
+    'description' => 'The base table for seller profiles.',
+    'fields' => array(
+      'profile_id' => array(
+        'description' => 'The primary identifier for a seller profile.',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'revision_id' => array(
+        'description' => 'The current {commerce_seller_profile_revision}.revision_id version identifier.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'type' => array(
+        'description' => 'The {commerce_seller_profile_type}.type of this profile.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'uid' => array(
+        'description' => 'The {users}.uid that this profile belongs to.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'status' => array(
+        'description' => 'Boolean indicating whether the profile is active or not.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'created' => array(
+        'description' => 'The Unix timestamp when the profile was created.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'changed' => array(
+        'description' => 'The Unix timestamp when the profile was most recently saved.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'data' => array(
+        'type' => 'blob',
+        'not null' => FALSE,
+        'size' => 'big',
+        'serialize' => TRUE,
+        'description' => 'A serialized array of additional data.',
+      ),
+    ),
+    'primary key' => array('profile_id'),
+    'unique keys' => array(
+      'revision_id' => array('revision_id'),
+    ),
+    'indexes' => array(
+      'uid' => array('uid'),
+      'seller_profile_type' => array('type'),
+      'uid_by_type' => array('uid', 'type'),
+    ),
+    'foreign keys' => array(
+      'seller_profile_revision' => array(
+        'table' => 'commerce_seller_profile_revision',
+        'columns'=> array('revision_id' => 'revision_id'),
+      ),
+      'owner' => array(
+        'table' => 'users',
+        'columns' => array('uid' => 'uid'),
+      ),
+    ),
+  );
+
+  $schema['commerce_seller_profile_revision'] = array(
+    'description' => 'Saves information about each saved revision of a {commerce_seller_profile}.',
+    'fields' => array(
+      'profile_id' => array(
+        'description' => 'The {commerce_seller_profile}.seller_id of the profile this revision belongs to.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'revision_id' => array(
+        'description' => 'The primary identifier for this revision.',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'revision_uid' => array(
+        'description' => 'The {users}.uid that created this profile at this revision.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'status' => array(
+        'description' => 'Boolean indicating whether the profile is active or not.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'log' => array(
+        'description' => 'The log entry explaining the changes in this version.',
+        'type' => 'text',
+        'not null' => TRUE,
+        'size' => 'big',
+      ),
+      'revision_timestamp' => array(
+        'description' => 'The Unix timestamp when this revision was created.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'data' => array(
+        'type' => 'blob',
+        'not null' => FALSE,
+        'size' => 'big',
+        'serialize' => TRUE,
+        'description' => 'A serialized array of additional data.',
+      ),
+    ),
+    'primary key' => array('revision_id'),
+    'indexes' => array(
+      'profile_id' => array('profile_id'),
+    ),
+    'foreign keys' => array(
+      'seller_profile' => array(
+        'table' => 'commerce_seller_profile',
+        'columns'=> array('profile_id' => 'profile_id'),
+      ),
+      'creator' => array(
+        'table' => 'users',
+        'columns' => array('uid' => 'uid'),
+      ),
+    ),
+  );
+
+  return $schema;
+}
+
+/**
+ * Implements hook_field_schema().
+ */
+function commerce_seller_field_schema($field) {
+  if ($field['type'] == 'commerce_seller_profile_reference') {
+    return array(
+      'columns' => array(
+        'profile_id' => array(
+          'type' => 'int',
+          'unsigned' => TRUE,
+          'not null' => FALSE,
+        ),
+      ),
+      'indexes' => array(
+        'profile_id' => array('profile_id'),
+      ),
+      'foreign keys' => array(
+        'profile_id' => array(
+          'table' => 'commerce_seller',
+          'columns' => array('profile_id' => 'profile_id'),
+        ),
+      ),
+    );
+  }
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function commerce_seller_uninstall() {
+  module_load_include('module', 'commerce');
+
+  // Delete any field instance attached to a seller profile type.
+  commerce_delete_instances('commerce_seller_profile');
+
+  // Delete any seller profile reference fields.
+  commerce_delete_fields('commerce_seller_profile_reference');
+}

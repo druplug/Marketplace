@@ -1,0 +1,10 @@
+name = Store UI
+description = Exposes a default UI for Stores through store edit forms and default Views.
+package = Commerce
+dependencies[] = contextual
+dependencies[] = field_ui
+dependencies[] = commerce
+dependencies[] = commerce_ui
+dependencies[] = commerce_store
+dependencies[] = views
+core = 7.x

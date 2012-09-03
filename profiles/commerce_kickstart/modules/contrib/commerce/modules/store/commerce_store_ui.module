@@ -1,0 +1,287 @@
+<?php
+
+/**
+ * @file
+ */
+
+/**
+ * Implements hook_menu().
+ */
+function commerce_product_ui_menu() {
+  $items = array();
+
+  // Note: admin/commerce/products is defined by a default View.
+
+  // Add a product.
+  $items['admin/commerce/products/add'] = array(
+    'title' => 'Add a product',
+    'description' => 'Add a new product for sale.',
+    'page callback' => 'commerce_product_ui_add_page',
+    'access callback' => 'commerce_product_ui_product_add_any_access',
+    'weight' => 10,
+    'file' => 'includes/commerce_product_ui.products.inc',
+  );
+
+  $items['admin/commerce/products/%commerce_product'] = array(
+    'title callback' => 'commerce_product_ui_product_title',
+    'title arguments' => array(3),
+    'page callback' => 'commerce_product_ui_product_form_wrapper',
+    'page arguments' => array(3),
+    'access callback' => 'commerce_product_access',
+    'access arguments' => array('update', 3),
+    'weight' => 0,
+    'context' => MENU_CONTEXT_PAGE | MENU_CONTEXT_INLINE,
+    'file' => 'includes/commerce_product_ui.products.inc',
+  );
+
+  $items['admin/commerce/products/%commerce_product/edit'] = array(
+    'title' => 'Edit',
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'weight' => -10,
+    'context' => MENU_CONTEXT_PAGE | MENU_CONTEXT_INLINE,
+  );
+
+  $items['admin/commerce/products/%commerce_product/delete'] = array(
+    'title' => 'Delete',
+    'page callback' => 'commerce_product_ui_product_delete_form_wrapper',
+    'page arguments' => array(3),
+    'access callback' => 'commerce_product_access',
+    'access arguments' => array('update', 3),
+    'type' => MENU_LOCAL_TASK,
+    'weight' => 20,
+    'context' => MENU_CONTEXT_INLINE,
+    'file' => 'includes/commerce_product_ui.products.inc',
+  );
+
+  return $items;
+}
+
+/**
+ * Menu item title callback: returns the SKU of a product for its pages.
+ *
+ * @param $product
+ *   The product object as loaded via the URL wildcard.
+ * @return
+ *   A page title of the format "Product: [Title]".
+ */
+function commerce_product_ui_product_title($product) {
+  return t('Product: @title', array('@title' => $product->title));
+}
+
+/**
+ * Access callback: determines if the user can create any type of product.
+ */
+function commerce_product_ui_product_add_any_access() {
+  // Grant automatic access to users with administer products permission.
+  if (user_access('administer commerce_product entities')) {
+    return TRUE;
+  }
+
+  return FALSE;
+}
+
+/**
+ * Implements hook_menu_local_tasks_alter().
+ */
+function commerce_product_ui_menu_local_tasks_alter(&$data, $router_item, $root_path) {
+  // Add action link 'admin/commerce/products/add' on 'admin/commerce/products'.
+  if ($root_path == 'admin/commerce/products') {
+    $item = menu_get_item('admin/commerce/products/add');
+    if ($item['access']) {
+      $data['actions']['output'][] = array(
+        '#theme' => 'menu_local_action',
+        '#link' => $item,
+      );
+    }
+  }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function commerce_product_ui_theme() {
+  return array(
+    'product_add_list' => array(
+      'variables' => array('content' => array()),
+      'file' => 'includes/commerce_product_ui.products.inc',
+    ),
+  );
+}
+
+/**
+ * Implements hook_entity_info_alter().
+ */
+function commerce_product_ui_entity_info_alter(&$entity_info) {
+  // Add a URI callback to the product entity.
+  $entity_info['commerce_product']['uri callback'] = 'commerce_product_ui_product_uri';
+}
+
+/**
+ * Entity uri callback: points to the edit form of the given product if no other
+ *   URI is specified.
+ */
+function commerce_product_ui_product_uri($product) {
+  // First look for a return value in the default entity uri callback.
+  $uri = commerce_product_uri($product);
+
+  // If a value was found, return it now.
+  if (!empty($uri)) {
+    return $uri;
+  }
+
+  // Otherwise return an admin URI if the user has permission.
+  if (commerce_product_access('view', $product)) {
+    return array(
+      'path' => 'admin/commerce/products/' . $product->product_id,
+    );
+  }
+
+  return NULL;
+}
+
+/**
+ * Implements hook_forms().
+ */
+function commerce_product_ui_forms($form_id, $args) {
+  $forms = array();
+
+  // Define a wrapper ID for the product add / edit form.
+  $forms['commerce_product_ui_product_form'] = array(
+    'callback' => 'commerce_product_product_form',
+  );
+
+  // Define a wrapper ID for the product delete confirmation form.
+  $forms['commerce_product_ui_product_delete_form'] = array(
+    'callback' => 'commerce_product_product_delete_form',
+  );
+
+  return $forms;
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function commerce_product_ui_form_alter(&$form, &$form_state, $form_id) {
+  // On field administration forms for product types add a breadcrumb.
+  if (in_array($form_id, array('field_ui_field_overview_form', 'field_ui_display_overview_form'))) {
+    if ($form['#entity_type'] == 'commerce_product') {
+      commerce_product_ui_set_breadcrumb(TRUE);
+    }
+  }
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ *
+ * The Product UI module instantiates the Product add/edit form at particular
+ * paths in the Commerce IA. It uses its own form ID to do so and alters the
+ * form here to add in appropriate redirection and an additional button.
+ *
+ * @see commerce_product_ui_product_form()
+ */
+function commerce_product_ui_form_commerce_product_ui_product_form_alter(&$form, &$form_state) {
+  $product = $form_state['commerce_product'];
+
+  // Add a submit handler to the save button to add a redirect.
+  $form['actions']['submit']['#submit'][] = 'commerce_product_ui_product_form_submit';
+
+  // If translation support is enabled, provide the suitable languages
+  if (module_exists('entity_translation') && entity_translation_enabled('commerce_product')) {
+    $handler = entity_translation_get_handler('commerce_product', $product);
+    $translations = $handler->getTranslations();
+
+    $form['language'] = array(
+      '#type' => 'select',
+      '#title' => t('Language'),
+      '#default_value' => isset($product->language) ? $product->language : '',
+      '#options' => array(LANGUAGE_NONE => t('Language neutral')) + locale_language_list('name'),
+      '#weight' => -10,
+    );
+
+    // Disable languages for existing translations, so it is not possible to
+    // switch this product to some language which is already in the translation set.
+    foreach ($translations->data as $langcode => $translation) {
+      if ($langcode != $translations->original) {
+        unset($form['language']['#options'][$langcode]);
+      }
+    }
+
+    // Since this function may change the language of the submitted form values,
+    // it has to be the first called.
+    array_unshift($form['actions']['submit']['#submit'], 'commerce_product_ui_product_form_translation_submit');
+  }
+
+  // Add the save and continue button for new products.
+  if (empty($product->product_id)) {
+    $form['actions']['save_continue'] = array(
+      '#type' => 'submit',
+      '#value' => t('Save and add another'),
+      '#submit' => $form['actions']['submit']['#submit'],
+      '#suffix' => l(t('Cancel'), 'admin/commerce/products'),
+      '#weight' => 45,
+    );
+  }
+  else {
+    $form['actions']['submit']['#suffix'] = l(t('Cancel'), 'admin/commerce/products');
+  }
+}
+
+/**
+ * Submit callback for commerce_product_ui_product_form().
+ *
+ * @see commerce_product_ui_form_commerce_product_ui_product_form_alter()
+ */
+function commerce_product_ui_product_form_submit($form, &$form_state) {
+  // Set the redirect based on the button clicked.
+  $array_parents = $form_state['triggering_element']['#array_parents'];
+  $submit_element = array_pop($array_parents);
+
+  if (arg(2) == 'products' && arg(3) == 'add') {
+    $form_state['redirect'] = 'admin/commerce/products';
+  }
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ *
+ * The Product UI module instantiates the Product delete form at a particular
+ * path in the Commerce IA. It uses its own form ID to do so and alters the
+ * form here to add in appropriate redirection.
+ *
+ * @see commerce_product_ui_product_delete_form()
+ */
+function commerce_product_ui_form_commerce_product_ui_product_delete_form_alter(&$form, &$form_state) {
+  $form['actions']['cancel']['#href'] = 'admin/commerce/products';
+  $form['#submit'][] = 'commerce_product_ui_product_delete_form_submit';
+}
+
+/**
+ * Submit callback for commerce_product_ui_product_delete_form().
+ *
+ * @see commerce_product_ui_form_commerce_product_ui_product_delete_form_alter()
+ */
+function commerce_product_ui_product_delete_form_submit($form, &$form_state) {
+  $form_state['redirect'] = 'admin/commerce/products';
+}
+
+/**
+ * Implements hook_views_api().
+ */
+function commerce_product_ui_views_api() {
+  return array(
+    'api' => 3,
+    'path' => drupal_get_path('module', 'commerce_product_ui') . '/includes/views',
+  );
+}
+
+/**
+ * Sets the breadcrumb for administrative product pages.
+ *
+ * @param $product_types
+ *   TRUE or FALSE indicating whether or not the breadcrumb should include the
+ *     product types administrative page.
+ *
+ * @deprecated since 7.x-1.4
+ */
+function commerce_product_ui_set_breadcrumb($product_types = FALSE) {
+}

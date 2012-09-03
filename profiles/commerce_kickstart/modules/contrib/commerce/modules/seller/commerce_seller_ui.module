@@ -21,6 +21,18 @@ function commerce_seller_ui_menu() {
     'weight' => 10,
     'file' => 'includes/commerce_seller_ui.profiles.inc',
   );
+  foreach (commerce_seller_profile_types() as $type => $profile_type) {
+    $items['admin/commerce/seller-profiles/add/' . strtr($type, array('_' => '-'))] = array(
+      'title' => 'Create @name',
+      'title arguments' => array('@name' => $profile_type['name']),
+      'description' => $profile_type['description'],
+      'page callback' => 'commerce_seller_ui_seller_profile_form_wrapper',
+      'page arguments' => array(commerce_seller_profile_new($type)),
+      'access callback' => 'commerce_seller_profile_access',
+      'access arguments' => array('create', commerce_seller_profile_new($type)),
+      'file' => 'includes/commerce_seller_ui.profiles.inc',
+    );
+  }
 
   $items['admin/commerce/seller-profiles/%commerce_seller_profile'] = array(
     'title callback' => 'commerce_seller_ui_seller_profile_title',
@@ -51,6 +63,28 @@ function commerce_seller_ui_menu() {
     'file' => 'includes/commerce_seller_ui.profiles.inc',
   );
 
+  $items['admin/commerce/seller-profiles/types'] = array(
+    'title' => 'Profile types',
+    'description' => 'Manage seller profile types for your store.',
+    'page callback' => 'commerce_seller_ui_seller_profile_types_overview',
+    'access arguments' => array('administer seller profile types'),
+    'type' => MENU_LOCAL_TASK,
+    'weight' => 0,
+    'file' => 'includes/commerce_seller_ui.profile_types.inc',
+  );
+
+  foreach (commerce_seller_profile_types() as $type => $profile_type) {
+    // Convert underscores to hyphens for the menu item argument.
+    $type_arg = strtr($type, '_', '-');
+
+    $items['admin/commerce/seller-profiles/types/' . $type_arg] = array(
+      'title' => $profile_type['name'],
+      'page callback' => 'commerce_seller_ui_profile_type_redirect',
+      'page arguments' => array($type),
+      'access arguments' => array('administer seller profile types'),
+    );
+  }
+
   return $items;
 }
 
@@ -75,7 +109,36 @@ function commerce_seller_ui_seller_profile_add_any_access() {
     return TRUE;
   }
 
+  // Check the user's access on a profile type basis.
+  foreach (commerce_seller_profile_types() as $type => $profile_type) {
+    if (commerce_seller_profile_access('create', commerce_seller_profile_new($type))) {
+      return TRUE;
+    }
+  }
+
   return FALSE;
+}
+
+/**
+ * Redirects a seller profile type URL to its fields management page.
+ */
+function commerce_seller_ui_profile_type_redirect($type) {
+  drupal_goto('admin/commerce/seller-profiles/types/' . strtr($type, '_', '-') . '/fields');
+}
+
+/**
+ * Implements hook_menu_alter().
+ */
+function commerce_seller_ui_menu_alter(&$items) {
+  // Transform the field UI tabs into contextual links.
+  foreach (commerce_seller_profile_types() as $type => $profile_type) {
+    // Convert underscores to hyphens for the menu item argument.
+    $type_arg = strtr($type, '_', '-');
+
+    // Transform the field UI tabs into contextual links.
+    $items['admin/commerce/seller-profiles/types/' . $type_arg . '/fields']['context'] = MENU_CONTEXT_PAGE | MENU_CONTEXT_INLINE;
+    $items['admin/commerce/seller-profiles/types/' . $type_arg . '/display']['context'] = MENU_CONTEXT_PAGE | MENU_CONTEXT_INLINE;
+  }
 }
 
 /**
@@ -95,6 +158,37 @@ function commerce_seller_ui_menu_local_tasks_alter(&$data, $router_item, $root_p
   }
 }
 
+/**
+ * Implements hook_admin_menu_map().
+ */
+function commerce_seller_ui_admin_menu_map() {
+  // Add awareness to the administration menu of the various profile types so
+  // they are included in the dropdown menu.
+  $map['admin/commerce/seller-profiles/types/%'] = array(
+    'parent' => 'admin/commerce/seller-profiles/types',
+    'arguments' => array(
+      array('%' => array_keys(commerce_seller_profile_types())),
+    ),
+  );
+
+  return $map;
+}
+
+/**
+ * Implements hook_help().
+ */
+function commerce_seller_ui_help($path, $arg) {
+  switch ($path) {
+    case 'admin/commerce/seller-profiles/types/add':
+      return '<p>' . t('Individual seller profile types can have different fields assigned to them.') . '</p>';
+  }
+
+  // Return the user defined help text per seller profile type when adding profiles.
+  if ($arg[1] == 'commerce' && $arg[2] == 'seller-profiles' && $arg[3] == 'add' && $arg[4]) {
+    $profile_type = commerce_seller_profile_type_load($arg[5]);
+    return (!empty($profile_type['help']) ? '<p>' . filter_xss_admin($profile_type['help']) . '</p>' : '');
+  }
+}
 
 /**
  * Implements hook_theme().
@@ -104,6 +198,10 @@ function commerce_seller_ui_theme() {
     'seller_profile_add_list' => array(
       'variables' => array('content' => array()),
       'file' => 'includes/commerce_seller_ui.profiles.inc',
+    ),
+    'seller_profile_type_admin_overview' => array(
+      'variables' => array('type' => NULL),
+      'file' => 'includes/commerce_seller_ui.profile_types.inc',
     ),
     'commerce_seller_profile_status' => array(
       'variables' => array('status' => NULL, 'label' => NULL, 'profile' => NULL),
@@ -119,6 +217,15 @@ function commerce_seller_ui_theme() {
 function commerce_seller_ui_entity_info_alter(&$entity_info) {
   // Add a URI callback to the profile entity.
   $entity_info['commerce_seller_profile']['uri callback'] = 'commerce_seller_ui_seller_profile_uri';
+
+  // Expose the admin UI for profile fields.
+  foreach ($entity_info['commerce_seller_profile']['bundles'] as $type => &$bundle) {
+    $bundle['admin'] = array(
+      'path' => 'admin/commerce/seller-profiles/types/' . strtr($type, '_', '-'),
+      'real path' => 'admin/commerce/seller-profiles/types/' . strtr($type, '_', '-'),
+      'access arguments' => array('administer seller profile types'),
+    );
+  }
 }
 
 /**
@@ -165,7 +272,19 @@ function commerce_seller_ui_forms($form_id, $args) {
 /**
  * Implements hook_form_alter().
  */
-function commerce_seller_ui_form_alter(&$form, &$form_state, $form_id) seller
+function commerce_seller_ui_form_alter(&$form, &$form_state, $form_id) {
+  // On field administration forms for seller profile types add a breadcrumb.
+  if (in_array($form_id, array('field_ui_field_overview_form', 'field_ui_display_overview_form'))) {
+    if ($form['#entity_type'] == 'commerce_seller_profile') {
+      // Load the seller profile type being modified for this form.
+      $profile_type = commerce_seller_profile_type_load($form['#bundle']);
+
+      drupal_set_title($profile_type['name']);
+
+      commerce_seller_ui_set_breadcrumb(TRUE);
+    }
+  }
+}
 
 /**
  * Implements hook_form_FORM_ID_alter().
@@ -202,7 +321,9 @@ function commerce_seller_ui_form_commerce_seller_ui_seller_profile_form_alter(&$
  */
 function commerce_seller_ui_seller_profile_form_submit($form, &$form_state) {
   // Set the redirect based on the button clicked.
-  if ($form_state['triggering_element']['#parents'][0] == 'save_continue') seller
+  if ($form_state['triggering_element']['#parents'][0] == 'save_continue') {
+    $form_state['redirect'] = 'admin/commerce/seller-profiles/add/' . strtr($form_state['seller_profile']->type, array('_' => '-'));
+  }
   elseif (arg(2) == 'seller-profiles' && arg(3) == 'add') {
     $form_state['redirect'] = 'admin/commerce/seller-profiles';
   }

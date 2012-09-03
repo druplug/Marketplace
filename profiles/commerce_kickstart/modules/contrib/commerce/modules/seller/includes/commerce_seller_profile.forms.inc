@@ -128,7 +128,7 @@ function commerce_seller_seller_profile_form($form, &$form_state, $profile) {
  * Validation callback for commerce_seller_profile_form().
  */
 function commerce_seller_seller_profile_form_validate($form, &$form_state) {
-  $profile = $form_state['seller_profile'];
+  $profile = $form_state['customer_profile'];
 
   // Validate the "owned by" field.
   if (!empty($form_state['values']['name']) && !($account = user_load_by_name($form_state['values']['name']))) {
@@ -138,7 +138,7 @@ function commerce_seller_seller_profile_form_validate($form, &$form_state) {
   }
 
   // Notify field widgets to validate their data.
-  field_attach_form_validate('commerce_seller_profile', $profile, $form, $form_state);
+  field_attach_form_validate('commerce_customer_profile', $profile, $form, $form_state);
 }
 
 /**

@@ -10,20 +10,20 @@
 function commerce_seller_ui_views_default_views() {
   $views = array();
 
-  // Seller profile admin list at admin/commerce/seller-profiles.
+  // seller profile admin list at admin/commerce/seller-profiles.
   $view = new view;
   $view->name = 'commerce_seller_profiles';
   $view->description = 'A list of seller profiles of all types.';
   $view->tag = 'commerce';
   $view->base_table = 'commerce_seller_profile';
-  $view->human_name = 'Seller profiles';
+  $view->human_name = 'seller profiles';
   $view->core = 0;
   $view->api_version = '3.0';
   $view->disabled = FALSE; /* Edit this to true to make a default view disabled initially */
 
   /* Display: Defaults */
   $handler = $view->new_display('default', 'Defaults', 'default');
-  $handler->display->display_options['title'] = 'Seller profiles';
+  $handler->display->display_options['title'] = 'seller profiles';
   $handler->display->display_options['access']['type'] = 'perm';
   $handler->display->display_options['access']['perm'] = 'administer commerce_seller_profile entities';
   $handler->display->display_options['cache']['type'] = 'none';
@@ -40,6 +40,7 @@ function commerce_seller_ui_views_default_views() {
   $handler->display->display_options['style_plugin'] = 'table';
   $handler->display->display_options['style_options']['columns'] = array(
     'profile_id' => 'profile_id',
+    'commerce_seller_address' => 'commerce_seller_address',
     'name' => 'name',
     'type' => 'type',
     'status' => 'status',
@@ -50,6 +51,13 @@ function commerce_seller_ui_views_default_views() {
   $handler->display->display_options['style_options']['info'] = array(
     'profile_id' => array(
       'sortable' => 1,
+      'default_sort_order' => 'asc',
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'commerce_seller_address' => array(
+      'sortable' => 0,
       'default_sort_order' => 'asc',
       'align' => '',
       'separator' => '',
@@ -90,17 +98,17 @@ function commerce_seller_ui_views_default_views() {
   $handler->display->display_options['style_options']['override'] = 1;
   $handler->display->display_options['style_options']['sticky'] = 0;
   $handler->display->display_options['style_options']['empty_table'] = 1;
-  /* No results behavior: Commerce Seller Profile: Empty text */
+  /* No results behavior: Commerce seller Profile: Empty text */
   $handler->display->display_options['empty']['empty_text']['id'] = 'empty_text';
   $handler->display->display_options['empty']['empty_text']['table'] = 'commerce_seller_profile';
   $handler->display->display_options['empty']['empty_text']['field'] = 'empty_text';
   $handler->display->display_options['empty']['empty_text']['add_path'] = 'admin/commerce/seller-profiles/add';
-  /* Relationship: Commerce Seller Profile: Owner */
+  /* Relationship: Commerce seller Profile: Owner */
   $handler->display->display_options['relationships']['uid']['id'] = 'uid';
   $handler->display->display_options['relationships']['uid']['table'] = 'commerce_seller_profile';
   $handler->display->display_options['relationships']['uid']['field'] = 'uid';
   $handler->display->display_options['relationships']['uid']['required'] = 0;
-  /* Field: Commerce Seller Profile: Profile ID */
+  /* Field: Commerce seller Profile: Profile ID */
   $handler->display->display_options['fields']['profile_id']['id'] = 'profile_id';
   $handler->display->display_options['fields']['profile_id']['table'] = 'commerce_seller_profile';
   $handler->display->display_options['fields']['profile_id']['field'] = 'profile_id';
@@ -119,6 +127,33 @@ function commerce_seller_ui_views_default_views() {
   $handler->display->display_options['fields']['profile_id']['hide_empty'] = 0;
   $handler->display->display_options['fields']['profile_id']['empty_zero'] = 0;
   $handler->display->display_options['fields']['profile_id']['link_to_profile'] = 1;
+  /* Field: Commerce seller profile: Address */
+  $handler->display->display_options['fields']['commerce_seller_address']['id'] = 'commerce_seller_address';
+  $handler->display->display_options['fields']['commerce_seller_address']['table'] = 'field_data_commerce_seller_address';
+  $handler->display->display_options['fields']['commerce_seller_address']['field'] = 'commerce_seller_address';
+  $handler->display->display_options['fields']['commerce_seller_address']['label'] = 'Name';
+  $handler->display->display_options['fields']['commerce_seller_address']['alter']['alter_text'] = 0;
+  $handler->display->display_options['fields']['commerce_seller_address']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['commerce_seller_address']['alter']['absolute'] = 0;
+  $handler->display->display_options['fields']['commerce_seller_address']['alter']['external'] = 0;
+  $handler->display->display_options['fields']['commerce_seller_address']['alter']['nl2br'] = 0;
+  $handler->display->display_options['fields']['commerce_seller_address']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['commerce_seller_address']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['commerce_seller_address']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['commerce_seller_address']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['commerce_seller_address']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['commerce_seller_address']['element_label_colon'] = 1;
+  $handler->display->display_options['fields']['commerce_seller_address']['element_default_classes'] = 1;
+  $handler->display->display_options['fields']['commerce_seller_address']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['commerce_seller_address']['empty_zero'] = 0;
+  $handler->display->display_options['fields']['commerce_seller_address']['click_sort_column'] = 'country';
+  $handler->display->display_options['fields']['commerce_seller_address']['settings'] = array(
+    'use_widget_handlers' => 0,
+    'format_handlers' => array(
+      0 => 'name-oneline',
+    ),
+  );
+  $handler->display->display_options['fields']['commerce_seller_address']['field_api_classes'] = 0;
   /* Field: User: Name */
   $handler->display->display_options['fields']['name']['id'] = 'name';
   $handler->display->display_options['fields']['name']['table'] = 'users';
@@ -141,7 +176,7 @@ function commerce_seller_ui_views_default_views() {
   $handler->display->display_options['fields']['name']['empty_zero'] = 0;
   $handler->display->display_options['fields']['name']['link_to_user'] = 1;
   $handler->display->display_options['fields']['name']['overwrite_anonymous'] = 0;
-  /* Field: Commerce Seller Profile: Type */
+  /* Field: Commerce seller Profile: Type */
   $handler->display->display_options['fields']['type']['id'] = 'type';
   $handler->display->display_options['fields']['type']['table'] = 'commerce_seller_profile';
   $handler->display->display_options['fields']['type']['field'] = 'type';
@@ -160,7 +195,7 @@ function commerce_seller_ui_views_default_views() {
   $handler->display->display_options['fields']['type']['hide_empty'] = 0;
   $handler->display->display_options['fields']['type']['empty_zero'] = 0;
   $handler->display->display_options['fields']['type']['link_to_profile'] = 0;
-  /* Field: Commerce Seller Profile: Status */
+  /* Field: Commerce seller Profile: Status */
   $handler->display->display_options['fields']['status']['id'] = 'status';
   $handler->display->display_options['fields']['status']['table'] = 'commerce_seller_profile';
   $handler->display->display_options['fields']['status']['field'] = 'status';
@@ -180,7 +215,7 @@ function commerce_seller_ui_views_default_views() {
   $handler->display->display_options['fields']['status']['empty_zero'] = 0;
   $handler->display->display_options['fields']['status']['type'] = 'active-disabled';
   $handler->display->display_options['fields']['status']['not'] = 0;
-  /* Field: Commerce Seller Profile: Edit link */
+  /* Field: Commerce seller Profile: Edit link */
   $handler->display->display_options['fields']['edit_seller_profile']['id'] = 'edit_seller_profile';
   $handler->display->display_options['fields']['edit_seller_profile']['table'] = 'commerce_seller_profile';
   $handler->display->display_options['fields']['edit_seller_profile']['field'] = 'edit_seller_profile';
@@ -199,7 +234,7 @@ function commerce_seller_ui_views_default_views() {
   $handler->display->display_options['fields']['edit_seller_profile']['element_default_classes'] = 1;
   $handler->display->display_options['fields']['edit_seller_profile']['hide_empty'] = 0;
   $handler->display->display_options['fields']['edit_seller_profile']['empty_zero'] = 0;
-  /* Field: Commerce Seller Profile: Delete link */
+  /* Field: Commerce seller Profile: Delete link */
   $handler->display->display_options['fields']['delete_seller_profile']['id'] = 'delete_seller_profile';
   $handler->display->display_options['fields']['delete_seller_profile']['table'] = 'commerce_seller_profile';
   $handler->display->display_options['fields']['delete_seller_profile']['field'] = 'delete_seller_profile';
@@ -217,6 +252,19 @@ function commerce_seller_ui_views_default_views() {
   $handler->display->display_options['fields']['delete_seller_profile']['element_default_classes'] = 1;
   $handler->display->display_options['fields']['delete_seller_profile']['hide_empty'] = 0;
   $handler->display->display_options['fields']['delete_seller_profile']['empty_zero'] = 0;
+  /* Filter criterion: Commerce seller profile: Address (commerce_seller_address:name_line) */
+  $handler->display->display_options['filters']['commerce_seller_address_name_line']['id'] = 'commerce_seller_address_name_line';
+  $handler->display->display_options['filters']['commerce_seller_address_name_line']['table'] = 'field_data_commerce_seller_address';
+  $handler->display->display_options['filters']['commerce_seller_address_name_line']['field'] = 'commerce_seller_address_name_line';
+  $handler->display->display_options['filters']['commerce_seller_address_name_line']['operator'] = 'contains';
+  $handler->display->display_options['filters']['commerce_seller_address_name_line']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['commerce_seller_address_name_line']['expose']['operator_id'] = 'commerce_seller_address_name_line_op';
+  $handler->display->display_options['filters']['commerce_seller_address_name_line']['expose']['label'] = 'Filter by names containing';
+  $handler->display->display_options['filters']['commerce_seller_address_name_line']['expose']['operator'] = 'commerce_seller_address_name_line_op';
+  $handler->display->display_options['filters']['commerce_seller_address_name_line']['expose']['identifier'] = 'name';
+  $handler->display->display_options['filters']['commerce_seller_address_name_line']['expose']['required'] = 0;
+  $handler->display->display_options['filters']['commerce_seller_address_name_line']['expose']['multiple'] = FALSE;
+
   /* Display: Admin page */
   $handler = $view->new_display('page', 'Admin page', 'page_1');
   $handler->display->display_options['path'] = 'admin/commerce/seller-profiles/list';
@@ -230,7 +278,7 @@ function commerce_seller_ui_views_default_views() {
   $handler->display->display_options['tab_options']['name'] = 'management';
   $translatables['commerce_seller_profiles'] = array(
     t('Defaults'),
-    t('Seller profiles'),
+    t('seller profiles'),
     t('more'),
     t('Apply'),
     t('Reset'),

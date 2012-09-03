@@ -10,12 +10,12 @@
 function commerce_seller_views_data() {
   $data = array();
 
-  $data['commerce_seller_profile']['table']['group']  = t('Commerce Seller Profile');
+  $data['commerce_seller_profile']['table']['group']  = t('Commerce seller Profile');
 
   $data['commerce_seller_profile']['table']['base'] = array(
     'field' => 'profile_id',
-    'title' => t('Commerce Seller Profile'),
-    'help' => t('Seller profiles containing addresses and other seller information.'),
+    'title' => t('Commerce seller Profile'),
+    'help' => t('seller profiles containing addresses and other seller information.'),
     'access query tag' => 'commerce_seller_profile_access',
   );
   $data['commerce_seller_profile']['table']['entity type'] = 'commerce_seller_profile';
@@ -36,6 +36,25 @@ function commerce_seller_views_data() {
     ),
     'argument' => array(
       'handler' => 'views_handler_argument_numeric',
+    ),
+  );
+
+  // Expose the profile type.
+  $data['commerce_seller_profile']['type'] = array(
+    'title' => t('Type'),
+    'help' => t('The human-readable name of the type of the seller profile.'),
+    'field' => array(
+      'handler' => 'commerce_seller_handler_field_seller_profile_type',
+      'click sortable' => TRUE,
+    ),
+    'filter' => array(
+      'handler' => 'commerce_seller_handler_filter_seller_profile_type',
+    ),
+    'sort' => array(
+      'handler' => 'views_handler_sort',
+    ),
+    'argument' => array(
+      'handler' => 'views_handler_argument_string',
     ),
   );
 
@@ -187,10 +206,7 @@ function commerce_seller_views_data() {
   $data['commerce_seller_profile']['changed_month'] = array(
     'title' => t('Updated month'),
     'help' => t('In the form of MM (01 - 12).'),
-    'argument' => array(
-      'field' => 'changed',
-      'handler' => 'views_handler_argument_node_created_month',
-    ),
+    'argument' => arrayseller,
   );
 
   $data['commerce_seller_profile']['changed_day'] = array(

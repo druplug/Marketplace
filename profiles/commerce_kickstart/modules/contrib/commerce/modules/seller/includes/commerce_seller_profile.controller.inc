@@ -2,7 +2,7 @@
 
 /**
  * @file
- * The controller for the customer profile entity containing the CRUD operations.
+ * The controller for the seller profile entity containing the CRUD operations.
  */
 
 /**

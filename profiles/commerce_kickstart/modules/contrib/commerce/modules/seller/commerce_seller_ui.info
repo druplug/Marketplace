@@ -12,6 +12,7 @@ configure = admin/commerce/seller-profiles/types
 
 ; Module includes
 files[] = includes/commerce_seller_ui.profiles.inc
+files[] = includes/commerce_customer_ui.profile_types.inc
 
 ; Views includes
 files[] = includes/views/commerce_seller_ui.views_default.inc

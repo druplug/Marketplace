@@ -67,19 +67,14 @@ function commerce_store_entity_info() {
       'fieldable' => TRUE,
       'entity keys' => array(
         'id' => 'store_id',
-        'bundle' => 'type',
         'label' => 'title',
         'revision' => 'revision_id',
-      ),
-      'bundle keys' => array(
-        'bundle' => 'type',
       ),
       'bundles' => array(
         'commerce_store' => array(
           'label' => t('Store', array(), array('context' => 'a drupal commerce store')),
         ),
       ),
-      'load hook' => 'commerce_store_load',
       'view modes' => array(
         'full' => array(
           'label' => t('Admin display'),

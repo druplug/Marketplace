@@ -88,7 +88,6 @@ function commerce_store_entity_property_info() {
 
 /**
  * Implements hook_entity_property_info_alter() on top of the Store module.
- */
 function commerce_store_entity_property_info_alter(&$info) {
   $properties = array();
 
@@ -97,3 +96,4 @@ function commerce_store_entity_property_info_alter(&$info) {
     $properties += $bundle_info['properties'];
   }
 }
+ */

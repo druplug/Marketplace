@@ -86,14 +86,3 @@ function commerce_store_entity_property_info() {
   return $info;
 }
 
-/**
- * Implements hook_entity_property_info_alter() on top of the Store module.
-function commerce_store_entity_property_info_alter(&$info) {
-  $properties = array();
-
-  foreach ($info['commerce_store']['bundles'] as $bundle => $bundle_info) {
-    $bundle_info += array('properties' => array());
-    $properties += $bundle_info['properties'];
-  }
-}
- */

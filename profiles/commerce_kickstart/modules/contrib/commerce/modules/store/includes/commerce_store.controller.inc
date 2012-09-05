@@ -156,11 +156,6 @@ class CommerceStoreEntityController extends DrupalCommerceEntityController {
       'css' => array(drupal_get_path('module', 'commerce_product') . '/theme/commerce_product.theme.css'),
     );
 
-    // Add the default fields inherent to the product entity.
-    $content['sku'] = array(
-      '#markup' => theme('commerce_product_sku', array('sku' => $product->sku, 'label' => t('SKU:'), 'product' => $product)),
-      '#attached' => $attached,
-    );
     // If the title module replacement field exists then don't show the original
     // title field.
     if (empty($product->title_field)) {

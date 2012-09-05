@@ -8,3 +8,12 @@ core = 7.x
 
 ; Module includes
 files[] = includes/commerce_store.controller.inc
+
+; Views handlers
+files[] = includes/views/handlers/commerce_store_handler_area_empty_text.inc
+files[] = includes/views/handlers/commerce_store_handler_argument_store_id.inc
+files[] = includes/views/handlers/commerce_store_handler_field_store.inc
+files[] = includes/views/handlers/commerce_store_handler_field_store_link.inc
+files[] = includes/views/handlers/commerce_store_handler_field_store_link_delete.inc
+files[] = includes/views/handlers/commerce_store_handler_field_store_link_edit.inc
+files[] = includes/views/handlers/commerce_store_handler_field_store_operations.inc

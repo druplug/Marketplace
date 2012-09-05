@@ -25,7 +25,6 @@ class CommerceStoreEntityController extends DrupalCommerceEntityController {
     $values += array(
       'store_id' => '',
       'is_new' => TRUE,
-      'sku' => '',
       'revision_id' => NULL,
       'title' => '',
       'uid' => '',

@@ -36,7 +36,7 @@ function commerce_store_ui_store_form_wrapper($store) {
   // Include the forms file from the Store module.
   module_load_include('inc', 'commerce_store', 'includes/commerce_store.forms');
 
-  return drupal_get_form('commerce_store_ui_store_form', $store);
+  return drupal_get_form('commerce_store_store_form', $store);
 }
 
 /**
@@ -54,5 +54,5 @@ function commerce_store_ui_store_delete_form_wrapper($store) {
   // Include the forms file from the Store module.
   module_load_include('inc', 'commerce_store', 'includes/commerce_store.forms');
 
-  return drupal_get_form('commerce_store_ui_store_delete_form', $store);
+  return drupal_get_form('commerce_store_store_delete_form', $store);
 }

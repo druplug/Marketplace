@@ -74,7 +74,11 @@ function commerce_store_entity_info() {
       'bundle keys' => array(
         'bundle' => 'type',
       ),
-      'bundles' => array(),
+      'bundles' => array(
+        'commerce_store' => array(
+          'label' => t('Store', array(), array('context' => 'a drupal commerce store')),
+        ),
+      ),
       'load hook' => 'commerce_store_load',
       'view modes' => array(
         'full' => array(
@@ -163,19 +167,6 @@ function commerce_store_permission() {
   $permissions += commerce_entity_access_permissions('commerce_store');
 
   return $permissions;
-}
-
-/**
- * Returns an initialized store object.
- *
- * @param $type
- *   The machine-readable type of the store.
- *
- * @return
- *   A store object with all default fields initialized.
- */
-function commerce_store_new($type = '') {
-  return entity_get_controller('commerce_store')->create();
 }
 
 /**
@@ -522,4 +513,28 @@ function template_preprocess_commerce_store_title(&$variables) {
  */
 function template_preprocess_commerce_store_status(&$variables) {
   $variables['status'] = empty($variables['status']) ? t('Disabled') : t('Active');
+}
+
+/**
+ * Returns an initialized store object.
+ *
+ * @param $uid
+ *   The uid of the owner of the store.
+ * @param $status
+ *   Optionally the status of the new store.
+ *
+ * @return
+ *   A store object with all default fields initialized.
+ */
+function commerce_store_new($uid = 0, $status = NULL, $type = 'commerce_store') {
+  // If no status was specified, use the default disabled status.
+  if (!isset($status)) {
+    $status = 0;
+  }
+
+  return entity_get_controller('commerce_store')->create(array(
+    'title' => '',
+    'uid' => $uid,
+    'status' => $status,
+  ));
 }

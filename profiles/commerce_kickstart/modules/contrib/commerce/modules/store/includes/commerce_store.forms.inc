@@ -97,9 +97,8 @@ function commerce_store_store_form($form, &$form_state, $store) {
  */
 function commerce_store_store_form_validate($form, &$form_state) {
   $store = $form_state['commerce_store'];
-
-  // Notify field widgets to validate their data.
   field_attach_form_validate('commerce_store', $store, $form, $form_state);
+
 }
 
 /**

@@ -15,8 +15,9 @@ function commerce_store_ui_menu() {
   // Add a store.
   $items['admin/commerce/stores/add'] = array(
     'title' => 'Add a store',
-    'description' => 'Add a new store for sale.',
-    'page callback' => 'commerce_store_ui_add_page',
+    'description' => 'Add a new store.',
+    'page callback' => 'commerce_store_ui_store_form_wrapper',
+    'page arguments' => array(commerce_store_new()),
     'access callback' => 'commerce_store_ui_store_add_any_access',
     'weight' => 10,
     'file' => 'includes/commerce_store_ui.stores.inc',
